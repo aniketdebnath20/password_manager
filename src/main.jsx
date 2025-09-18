@@ -7,7 +7,7 @@ import BackGround_Color from "./components/background.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <BackGround_Color/>
+      <BackGround_Color />
       <NavBar />
       <App />
   </StrictMode>
