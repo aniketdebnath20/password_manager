@@ -11,6 +11,19 @@ const Home = () => {
     password: "",
   });
 
+  const getPasswords = async () => {
+    try {
+      let req = await fetch("http://localhost:3000/");
+      let password = await req.json();
+      setPasswordArray(password);
+      console.log(password);
+    } catch (error) {
+      console.log("db error", error);
+    }
+  };
+
+  getPasswords();
+
   useEffect(() => {
     const password = localStorage.getItem("passwords");
     if (password) {
@@ -20,15 +33,20 @@ const Home = () => {
 
   const save = (e) => {
     e.preventDefault();
-    console.log(form);
-
     setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-    localStorage.setItem(
-      "passwords",
-      JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-    );
-    console.log(passwordArray);
-    console.log([...passwordArray, form]);
+    // localStorage.setItem(
+    //   "passwords",
+    //   JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
+    // );
+    // console.log(passwordArray);
+    // console.log([...passwordArray, form]);
+    let res = fetch("http://localhost:3000/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ ...form, id: uuidv4() }),
+    });
 
     alert("Password Added Successfully");
   };
