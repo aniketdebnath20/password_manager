@@ -31,38 +31,41 @@ const Home = () => {
     }
   }, []);
 
-  const save = (e) => {
+  const save = async (e) => {
     e.preventDefault();
+
+    await fetch("http://localhost:3000/", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: form.id }),
+    });
+
     setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
-    // localStorage.setItem(
-    //   "passwords",
-    //   JSON.stringify([...passwordArray, { ...form, id: uuidv4() }])
-    // );
-    // console.log(passwordArray);
-    // console.log([...passwordArray, form]);
-    let res = fetch("http://localhost:3000/", {
+
+    await fetch("http://localhost:3000/", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ ...form, id: uuidv4() }),
     });
 
+    setForm({ url: "", username: "", password: "" });
     alert("Password Added Successfully");
   };
 
-  const DeletePassword = (id) => {
+  const DeletePassword = async (id) => {
     console.log("delte", id);
     setPasswordArray(passwordArray.filter((item) => item.id !== id));
-    localStorage.setItem(
-      "passwords",
-      JSON.stringify(passwordArray.filter((item) => item.id !== id))
-    );
+    await fetch("http://localhost:3000/", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id }),
+    });
+
+    alert("Password Deleted Successfully");
   };
 
   const EditPassowrd = (id) => {
-    console.log("edit", id);
-    setForm(passwordArray.find((item) => item.id === id));
+    setForm({ ...passwordArray.filter((item) => item.id === id)[0], id: id });
     setPasswordArray(passwordArray.filter((item) => item.id !== id));
   };
 
@@ -190,7 +193,7 @@ const Home = () => {
                   </td>
                   <td className="py-2 px-4 border">
                     <div className="flex items-center gap-2 justify-evenly">
-                      {item.password}
+                      {"*".repeat(item.password.length)}
                       <CopyCheckIcon
                         size={18}
                         onClick={() => {
